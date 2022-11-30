@@ -33,7 +33,13 @@ public class Train<T> implements List<T> {
 
     // TODO JAVADOC
     public T[] toArray() {
-        return null; // FIXME
+        T[] t = (T[]) new Object[size];
+        TrainIterator iterator = new TrainIterator<T>(this);
+        int index = 0;
+        while(iterator.hasNext()) {
+            t[index] = (T) iterator.next();
+        }
+        return t;
     }
 
     @Override
@@ -62,7 +68,20 @@ public class Train<T> implements List<T> {
 
     @Override
     public void add(T element) throws IllegalArgumentException {
-        // FIXME
+        if (element == null) {
+            throw new IllegalArgumentException();
+        }
+        if (engine == null) {
+            engine = new TrainCar(element);
+            size++;
+            return;
+        }
+        TrainCar<T> current = engine;
+        while(current.getNextCar() != null) {
+            current = current.getNextCar();
+        }
+        current.setNextCar(new TrainCar(element));
+        size++;
     }
 
     @Override
