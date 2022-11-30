@@ -71,7 +71,7 @@ public class Train<T> implements List<T> {
         if (element == null) {
             throw new IllegalArgumentException();
         }
-        if (engine == null) {
+        if (size == 0) {
             engine = new TrainCar(element);
             size++;
             return;
@@ -86,22 +86,96 @@ public class Train<T> implements List<T> {
 
     @Override
     public void add(int index, T element) throws IndexOutOfBoundsException, IllegalArgumentException {
-        // FIXME
+        if (size < index) {
+            throw new IndexOutOfBoundsException();
+        } 
+        if (size == index) {
+            this.add(element);
+            return;
+        }
+        if(index == 0) {
+            TrainCar<T> car = new TrainCar(element);
+            car.setNextCar(engine);
+            engine = car;
+            size++;
+            return;
+        }
+        if (element == null) {
+            throw new IllegalArgumentException();
+        }
+        TrainCar<T> current = engine;
+        while(index != 1) {
+            current = current.getNextCar();
+            index--;
+        }
+        TrainCar<T> next = current.getNextCar();
+        current.setNextCar(new TrainCar(element));
+        current.getNextCar().setNextCar(next);
+        size++;
+
     }
 
     @Override
     public T remove() throws NoSuchElementException {
-        return null; // FIXME
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        TrainCar<T> temp = engine;
+        engine = engine.getNextCar();
+        temp.setNextCar(null);
+        size--;
+        return temp.getCargo();
+
     }
 
     @Override
     public T remove(int index) throws NoSuchElementException, IndexOutOfBoundsException {
-        return null; // FIXME
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        if (size <= index) {
+            throw new IndexOutOfBoundsException();
+        }
+        TrainCar<T> current = engine;
+        int loop = 0;
+        while(loop != index - 1) {
+            current = current.getNextCar();
+            loop++;
+        }
+        if (index == size - 1) {
+            TrainCar<T> temp = current.getNextCar();
+            current.setNextCar(null);
+            size--;
+            return temp.getCargo();
+        }
+        TrainCar<T> temp = current.getNextCar();
+        current.setNextCar(temp.getNextCar());
+        temp.setNextCar(null);
+        size--;
+        return temp.getCargo();
     }
 
     @Override
     public T remove(T element) throws IllegalArgumentException, NoSuchElementException {
-        return null; // FIXME
+        if (element == null) {
+            throw new IllegalArgumentException();
+        }
+        if (engine.getCargo().equals(element)) {
+            TrainCar<T> temp = engine;
+            engine = null;
+            temp.setNextCar(null);
+            return temp.getCargo();
+            
+        }
+        int index = 0;
+        TrainCar<T> current = engine;
+        while (index < size) {
+            if(current.equals(element)) {
+
+            }
+            index++;
+        }
+        return null;
     }
 
     @Override
